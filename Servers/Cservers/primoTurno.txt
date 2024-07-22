@@ -1,0 +1,40 @@
+
+//inizializzo buffer
+char buffer[BUFFER_SIZE] = {0};
+
+//A partire dal "listen"
+
+while (1) {
+        // Accettazione di una nuova connessione
+        if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0) {
+            perror("accept");
+            close(server_fd);
+            exit(EXIT_FAILURE);
+        }
+
+        // Lettura del messaggio di richiesta dal client
+        int valread = read(new_socket, buffer, BUFFER_SIZE);
+        if (valread > 0) {
+            char type = buffer[0];
+            unsigned char len = buffer[1];
+            char ip_str[16] = {0};
+            strncpy(ip_str, buffer + 2, len - 1); // Copia dell'IP (escludendo il terminatore nullo)
+
+            if (type == 'Q') {
+                // Conversione dell'indirizzo IP in formato numerico
+                unsigned int ip_num = htonl(ip2uint(ip_str));
+
+                // Creazione del messaggio di risposta
+                char response[6];
+                response[0] = 'R';
+                response[1] = 4;
+                memcpy(response + 2, &ip_num, 4);
+
+                // Invio della risposta al client
+                send(new_socket, response, sizeof(response), 0);
+            }
+        }
+
+        // Chiusura della connessione
+        close(new_socket);
+    }

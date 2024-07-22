@@ -1,0 +1,8 @@
+#makefile - struttura generale
+all: client server
+client: client.c
+	gcc -Wall -std=c11 -o client client.c
+server: server.c
+	gcc -Wall -std=c11 -o server server.c
+clean: #utilizzo questo comando scrivendo "make clean"
+	rm -f client server

@@ -1,0 +1,3 @@
+shift - cmd - + -> semicolon
+
+shift - cmd - L -> semicolon + newline
